@@ -19,7 +19,7 @@ class CreateProfilesTable extends Migration
             $table->string('full_name');
             $table->string('phone_number');
             $table->string('email');
-            $table->text('address');
+            $table->text('address')->nullable();
             $table->timestamps();
         });
 

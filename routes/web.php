@@ -17,10 +17,11 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('/login', ['as' => 'login', 'uses' => 'Auth\LoginController@login']);
+    $router->post('/register', ['as' => 'register', 'uses' => 'Auth\RegisterController@register']);
 
 //    $router->group(['middleware' => 'auth'], function () use ($router) {
 //        $router->group(['middleware' => 'role:admin'], function () use ($router) {
-            $router->post('/upload-file', ['as' => 'admin.upload_file', 'uses' => 'Admin\AdminController@uploadFile']);
+    $router->post('/upload-file', ['as' => 'admin.upload_file', 'uses' => 'Admin\AdminController@uploadFile']);
 //        });
 //    });
 });
