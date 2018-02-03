@@ -14,9 +14,9 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            ['role_id' => 1, 'email' => 'admin@admin.com', 'username' => 'admin', 'password' => Hash::make('pajakmedanjaya'), 'api_token' => \App\APITokenGenerator::generate()],
-            ['role_id' => 2, 'email' => 'milham939@gmail.com', 'username' => 'ilhammhdd', 'password' => Hash::make('asd'), 'api_token' => \App\APITokenGenerator::generate()],
-            ['role_id' => 3, 'email' => 'robert@gmail.com', 'username' => 'robert', 'password' => Hash::make('asd'), 'api_token' => \App\APITokenGenerator::generate()]
+            ['role_id' => 1, 'file_id' => null, 'email' => 'admin@admin.com', 'username' => 'admin', 'password' => Hash::make('pajakmedanjaya'), 'api_token' => \App\APITokenGenerator::generate()],
+            ['role_id' => 2, 'file_id' => null, 'email' => 'milham939@gmail.com', 'username' => 'ilhammhdd', 'password' => Hash::make('asd'), 'api_token' => \App\APITokenGenerator::generate()],
+            ['role_id' => 3, 'file_id' => null, 'email' => 'robert@gmail.com', 'username' => 'robert', 'password' => Hash::make('asd'), 'api_token' => \App\APITokenGenerator::generate()]
         ]);
     }
 }

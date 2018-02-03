@@ -20,9 +20,9 @@ class File extends Model
         'id', 'file_path', 'file_name'
     ];
 
-    public function profile()
+    public function user()
     {
-        return $this->hasOne('App\Profile', 'file_id', 'id');
+        return $this->hasOne('App\User', 'file_id', 'id');
     }
 
     public function category()

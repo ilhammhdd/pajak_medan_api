@@ -18,7 +18,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'id', 'role_id', 'email', 'username', 'api_token'
+        'id', 'role_id', 'file_id', 'email', 'username', 'api_token'
     ];
 
     /**
@@ -43,5 +43,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function customer()
     {
         return $this->hasOne('App\Customer', 'user_id', 'id');
+    }
+
+    public function file()
+    {
+        return $this->hasOne('App\File', 'file_id', 'id');
     }
 }
