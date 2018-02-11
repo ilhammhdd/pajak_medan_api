@@ -35,6 +35,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->belongsTo('App\Role', 'role_id', 'id');
     }
 
+    public function loginType()
+    {
+        return $this->belongsTo('App\LoginType', 'login_type_id', 'id');
+    }
+
     public function employee()
     {
         return $this->hasOne('App\Employee', 'user_id', 'id');
@@ -47,6 +52,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function file()
     {
-        return $this->hasOne('App\File', 'file_id', 'id');
+        return $this->belongsTo('App\File', 'file_id', 'id');
     }
 }

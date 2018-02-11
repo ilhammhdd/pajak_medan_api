@@ -50,7 +50,7 @@ class File extends Model
 
             $decodeString = base64_decode($encodedString);
 
-            $path = storage_path('app/images/') . $fileName;
+            $path = storage_path('app\\images\\') . $fileName;
 
             $file = fopen($path, 'wb');
 

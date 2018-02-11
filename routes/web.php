@@ -22,6 +22,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('/alternative-login', ['as' => 'alternative_login', 'uses' => 'Auth\AlternativeLoginController@checkUser']);
 
 //    $router->group(['middleware' => 'auth'], function () use ($router) {
+//    $router->group(['middleware' => 'role:customer'], function () use ($router) {
+    $router->get('/get-categories', ['as' => 'customer.get_categories', 'uses' => 'CustomerController@getCategories']);
+//    });
+
 //        $router->group(['middleware' => 'role:admin'], function () use ($router) {
     $router->post('/upload-file', ['as' => 'admin.upload_file', 'uses' => 'Admin\AdminController@uploadFile']);
 //        });
