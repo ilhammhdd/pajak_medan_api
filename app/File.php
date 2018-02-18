@@ -35,6 +35,11 @@ class File extends Model
         return $this->hasOne('App\Good', 'file_id', 'id');
     }
 
+    public function event()
+    {
+        return $this->hasOne('App\Event', 'file_id', 'id');
+    }
+
 //======================================================================================================================
 
     public static function uploadFile(Request $request)

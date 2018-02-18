@@ -24,6 +24,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 //    $router->group(['middleware' => 'auth'], function () use ($router) {
 //    $router->group(['middleware' => 'role:customer'], function () use ($router) {
     $router->get('/get-categories', ['as' => 'customer.get_categories', 'uses' => 'CustomerController@getCategories']);
+    $router->get('/get-events', ['as' => 'customer.get_events', 'uses' => 'CustomerController@getEvents']);
 //    });
 
 //        $router->group(['middleware' => 'role:admin'], function () use ($router) {

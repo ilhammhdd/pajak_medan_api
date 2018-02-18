@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,11 +14,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('Illuminate\Contracts\Routing\ResponseFactory', function ($app) {
-            return new \Illuminate\Routing\ResponseFactory(
-                $app['Illuminate\Contracts\View\Factory'],
-                $app['Illuminate\Routing\Redirector']
-            );
-        });
+        Schema::defaultStringLength(191);
+//        $this->app->singleton('Illuminate\Contracts\Routing\ResponseFactory', function ($app) {
+//            return new \Illuminate\Routing\ResponseFactory(
+//                $app['Illuminate\Contracts\View\Factory'],
+//                $app['Illuminate\Routing\Redirector']
+//            );
+//        });
     }
 }
