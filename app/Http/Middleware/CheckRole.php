@@ -16,12 +16,13 @@ class CheckRole
      */
     public function handle($request, Closure $next, $role)
     {
-        if ($request->user()->role == $role) {
+        if ($request->user()->role->name == $role) {
             return $next($request);
         }
 
         return response()->json([
-            'message' => 'Your role isn\'t authorized to do this action'
+            'message' => 'Your role isn\'t authorized to do this action',
+            'your_role' => $request->user()->role->name
         ]);
     }
 }

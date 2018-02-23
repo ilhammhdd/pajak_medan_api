@@ -21,6 +21,7 @@ class CreateGoodsTable extends Migration
             $table->integer('price');
             $table->text('description');
             $table->boolean('available');
+            $table->string('unit');
             $table->timestamps();
         });
 

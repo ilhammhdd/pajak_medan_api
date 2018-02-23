@@ -69,14 +69,14 @@ $app->singleton('filesystem', function ($app) {
 |
 */
 
-$app->middleware([
-    App\Http\Middleware\ExampleMiddleware::class
+//$app->middleware([
+//    App\Http\Middleware\ExampleMiddleware::class
 //    App\Http\Middleware\CheckRole::class
-]);
+//]);
 
 $app->routeMiddleware([
-    'auth' => App\Http\Middleware\Authenticate::class
-//    'role' => App\Http\Middleware\CheckRole::class
+    'auth' => App\Http\Middleware\Authenticate::class,
+    'role' => App\Http\Middleware\CheckRole::class
 ]);
 
 /*

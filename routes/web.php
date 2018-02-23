@@ -21,14 +21,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/alternative-login', ['as' => 'alternative_login', 'uses' => 'Auth\AlternativeLoginController@checkUser']);
 
-//    $router->group(['middleware' => 'auth'], function () use ($router) {
-//    $router->group(['middleware' => 'role:customer'], function () use ($router) {
-    $router->get('/get-categories', ['as' => 'customer.get_categories', 'uses' => 'CustomerController@getCategories']);
-    $router->get('/get-events', ['as' => 'customer.get_events', 'uses' => 'CustomerController@getEvents']);
-//    });
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->group(['middleware' => 'role:customer'], function () use ($router) {
+            $router->post('/get-categories', ['as' => 'customer.get_categories', 'uses' => 'CustomerController@getCategories']);
+            $router->post('/get-events', ['as' => 'customer.get_events', 'uses' => 'CustomerController@getEvents']);
+            $router->post('/get-goods', ['as' => 'customer.get_goods', 'uses' => 'CustomerController@getGoods']);
+        });
 
 //        $router->group(['middleware' => 'role:admin'], function () use ($router) {
-    $router->post('/upload-file', ['as' => 'admin.upload_file', 'uses' => 'Admin\AdminController@uploadFile']);
+        $router->post('/upload-file', ['as' => 'admin.upload_file', 'uses' => 'Admin\AdminController@uploadFile']);
 //        });
-//    });
+    });
 });

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Event;
+use App\Good;
+use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class CustomerController extends BaseController
@@ -46,6 +48,30 @@ class CustomerController extends BaseController
             'success' => true,
             'message' => 'Successfully get all events',
             'events' => $events
+        ]);
+    }
+
+    public function getGoods(Request $request)
+    {
+        $goods = Good::where('category_id', $request->json("data")["category_id"])->get();
+        $goodsJsonArray = [];
+
+        foreach ($goods as $good) {
+            $goodsJsonArray[] = [
+                "id" => $good->id,
+                "file_path" => $good->file()->pluck("file_path")->first(),
+                "name" => $good->name,
+                "price" => $good->price,
+                "description" => $good->desciption,
+                "available" => $good->available,
+                "unit" => $good->unit
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Successfully get all goods of the given category',
+            'goods' => $goodsJsonArray
         ]);
     }
 }
