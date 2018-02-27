@@ -64,7 +64,9 @@ class CustomerController extends BaseController
                 "price" => $good->price,
                 "description" => $good->desciption,
                 "available" => $good->available,
-                "unit" => $good->unit
+                "unit" => $good->unit,
+                "min_order" => $good->min_order,
+                "condition" => $good->condition
             ];
         }
 

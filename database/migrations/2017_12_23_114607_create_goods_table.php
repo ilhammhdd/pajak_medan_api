@@ -22,6 +22,8 @@ class CreateGoodsTable extends Migration
             $table->text('description');
             $table->boolean('available');
             $table->string('unit');
+            $table->integer('min_order');
+            $table->string('condition');
             $table->timestamps();
         });
 

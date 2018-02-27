@@ -16,7 +16,7 @@ class Good extends Model
     protected $table = 'goods';
 
     protected $fillable = [
-        'id', 'file_id', 'category_id', 'name', 'price', 'description', 'available', 'unit'
+        'id', 'file_id', 'category_id', 'name', 'price', 'description', 'available', 'unit', 'min_order', 'condition'
     ];
 
     public function file()
