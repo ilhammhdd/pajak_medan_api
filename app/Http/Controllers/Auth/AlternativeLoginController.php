@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\APITokenGenerator;
+use App\Customer;
 use App\File;
 use App\LoginType;
+use App\Profile;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -28,6 +30,11 @@ class AlternativeLoginController extends Controller
             if (!$authUser) {
                 $newAPIToken = APITokenGenerator::generate();
 
+                $profile = new Profile();
+                $profile->full_name = $request->json('data')["full_name"];
+                $profile->email = $request->json('data')["email"];
+                $profile->save();
+
                 $newUser = new User();
                 $newUser->role_id = 3;
                 $newUser->email = $request->json("data")["email"];
@@ -45,24 +52,33 @@ class AlternativeLoginController extends Controller
                 }
 
                 $newUser->save();
+
+                $customer = new Customer();
+                $customer->user()->associate($newUser);
+                $customer->profile()->associate($profile);
+                $customer->save();
+
                 return response()->json([
                     'authenticated' => true,
-                    'api_token' => $newAPIToken,
+                    'user' => $newUser,
+                    'profile' => $newUser->customer()->first()->profile()->first(),
+                    'customer' => $authUser->customer()->first(),
                     'message' => 'Alternative login success, and new user has been created'
                 ]);
             } elseif ($authUser->username == $request->json("data")["id"]) {
                 return response()->json([
                     'authenticated' => true,
-                    'api_token' => $authUser->api_token,
+                    'user' => $authUser,
+                    'profile' => $authUser->customer()->first()->profile()->first(),
+                    'customer' => $authUser->customer()->first(),
                     'message' => 'Alternative login success'
                 ]);
-            } else {
-                return response()->json([
-                    'authenticated' => false,
-                    'email_taken' => true,
-                    'message' => 'This email is already taken'
-                ]);
             }
+            return response()->json([
+                'authenticated' => false,
+                'email_taken' => true,
+                'message' => 'This email is already taken'
+            ]);
         }
         return response()->json([
             'authenticated' => false,

@@ -33,4 +33,9 @@ class Good extends Model
     {
         return $this->belongsToMany('App\Basket', 'baskets_goods', 'role_id', 'basket_id');
     }
+
+    public function goodsReview()
+    {
+        return $this->hasMany('App\GoodsReview', 'good_id', 'id');
+    }
 }

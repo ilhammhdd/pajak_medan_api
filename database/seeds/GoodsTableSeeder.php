@@ -28,18 +28,18 @@ class GoodsTableSeeder extends Seeder
         ]);
 
         DB::table('goods')->insert([
-            ['file_id' => 100, 'category_id' => 1, "name" => "Kol", "price" => 150000, "description" => "Deskripsi Kol", "available" => true, "unit" => "Tungkul kul", "min_order" => 2, "condition" => "fresh"],
-            ['file_id' => 101, 'category_id' => 2, "name" => "Bayam", "price" => 20000, "description" => "Deskripsi Bayam", "available" => false, "unit" => "Ikat","min_order"=>1,"condition"=>"fresh"],
-            ['file_id' => 102, 'category_id' => 3, "name" => "Bawang", "price" => 10000, "description" => "Deskripsi Bawang", "available" => true, "unit" => "Ons","min_order"=>3,"condition"=>"fresh"],
-            ['file_id' => 103, 'category_id' => 4, "name" => "Wortel", "price" => 8000, "description" => "Deskripsi Wortel", "available" => true, "unit" => "Kilo","min_order"=>2,"condition"=>"fresh"],
-            ['file_id' => 104, 'category_id' => 1, "name" => "Buncis", "price" => 7500, "description" => "Deskripsi Buncis", "available" => false, "unit" => "Kilo","min_order"=>4,"condition"=>"rotten"],
-            ['file_id' => 105, 'category_id' => 1, "name" => "Kangkung", "price" => 4500, "description" => "Deskripsi Kangkung", "available" => true, "unit" => "Ikat","min_order"=>5,"condition"=>"fresh"],
-            ['file_id' => 106, 'category_id' => 1, "name" => "Labu Jipang", "price" => 11000, "description" => "Deskripsi Labu Jipang", "available" => false, "unit" => "Kilo","min_order"=>1,"condition"=>"rotten"],
-            ['file_id' => 107, 'category_id' => 1, "name" => "Brokoli", "price" => 7400, "description" => "Deskripsi Brokoli", "available" => true, "unit" => "Tungkul","min_order"=>2,"condition"=>"fresh"],
-            ['file_id' => 108, 'category_id' => 1, "name" => "Daun Pepaya", "price" => 9600, "description" => "Deskripsi Daun Pepaya", "available" => false, "unit" => "Ikat","min_order"=>5,"condition"=>"fresh"],
-            ['file_id' => 109, 'category_id' => 1, "name" => "Melinjo", "price" => 5300, "description" => "Deskripsi Melinjo", "available" => true, "unit" => "Ons","min_order"=>6,"condition"=>"rotten"],
-            ['file_id' => 110, 'category_id' => 1, "name" => "Jagung", "price" => 13200, "description" => "Deskripsi Jagung", "available" => true, "unit" => "Kilo","min_order"=>6,"condition"=>"fresh"],
-            ['file_id' => 111, 'category_id' => 1, "name" => "Terung", "price" => 16000, "description" => "Deskripsi Terung", "available" => true, "unit" => "Ons","min_order"=>2,"condition"=>"rotten"],
+            ['id' => 1, 'file_id' => 100, 'category_id' => 1, "name" => "Kol", "price" => 150000, "description" => "Deskripsi Kol", "available" => true, "unit" => "Tungkul", "min_order" => 2, "condition" => "fresh"],
+            ['id' => 2, 'file_id' => 101, 'category_id' => 2, "name" => "Bayam", "price" => 20000, "description" => "Deskripsi Bayam", "available" => false, "unit" => "Ikat", "min_order" => 1, "condition" => "fresh"],
+            ['id' => 3, 'file_id' => 102, 'category_id' => 3, "name" => "Bawang", "price" => 10000, "description" => "Deskripsi Bawang", "available" => true, "unit" => "Ons", "min_order" => 3, "condition" => "fresh"],
+            ['id' => 4, 'file_id' => 103, 'category_id' => 4, "name" => "Wortel", "price" => 8000, "description" => "Deskripsi Wortel", "available" => true, "unit" => "Kilo", "min_order" => 2, "condition" => "fresh"],
+            ['id' => 5, 'file_id' => 104, 'category_id' => 1, "name" => "Buncis", "price" => 7500, "description" => "Deskripsi Buncis", "available" => false, "unit" => "Kilo", "min_order" => 4, "condition" => "rotten"],
+            ['id' => 6, 'file_id' => 105, 'category_id' => 1, "name" => "Kangkung", "price" => 4500, "description" => "Deskripsi Kangkung", "available" => true, "unit" => "Ikat", "min_order" => 5, "condition" => "fresh"],
+            ['id' => 7, 'file_id' => 106, 'category_id' => 1, "name" => "Labu Jipang", "price" => 11000, "description" => "Deskripsi Labu Jipang", "available" => false, "unit" => "Kilo", "min_order" => 1, "condition" => "rotten"],
+            ['id' => 8, 'file_id' => 107, 'category_id' => 1, "name" => "Brokoli", "price" => 7400, "description" => "Deskripsi Brokoli", "available" => true, "unit" => "Tungkul", "min_order" => 2, "condition" => "fresh"],
+            ['id' => 9, 'file_id' => 108, 'category_id' => 1, "name" => "Daun Pepaya", "price" => 9600, "description" => "Deskripsi Daun Pepaya", "available" => false, "unit" => "Ikat", "min_order" => 5, "condition" => "fresh"],
+            ['id' => 10, 'file_id' => 109, 'category_id' => 1, "name" => "Melinjo", "price" => 5300, "description" => "Deskripsi Melinjo", "available" => true, "unit" => "Ons", "min_order" => 6, "condition" => "rotten"],
+            ['id' => 11, 'file_id' => 110, 'category_id' => 1, "name" => "Jagung", "price" => 13200, "description" => "Deskripsi Jagung", "available" => true, "unit" => "Kilo", "min_order" => 6, "condition" => "fresh"],
+            ['id' => 12, 'file_id' => 111, 'category_id' => 1, "name" => "Terung", "price" => 16000, "description" => "Deskripsi Terung", "available" => true, "unit" => "Ons", "min_order" => 2, "condition" => "rotten"],
         ]);
     }
 }

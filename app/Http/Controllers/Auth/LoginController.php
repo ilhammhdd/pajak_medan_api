@@ -25,13 +25,14 @@ class LoginController extends Controller
         if (Hash::check($password, $user->password)) {
             return response()->json([
                 'authenticated' => true,
-                'api_token' => $user->api_token,
+                'user' => $user,
+                'profile' => $user->customer()->first()->profile()->first(),
+                'customer' => $user->customer()->first(),
                 'message' => 'User Authenticated'
             ]);
         }
         return response()->json([
             'authenticated' => false,
-            'api_token' => $user->api_token,
             'message' => 'Password incorrect'
         ]);
     }

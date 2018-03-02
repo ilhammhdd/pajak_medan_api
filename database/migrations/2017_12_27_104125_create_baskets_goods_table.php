@@ -18,7 +18,7 @@ class CreateBasketsGoodsTable extends Migration
             $table->integer('good_id')->unsigned();
             $table->integer('basket_id')->unsigned();
             $table->integer('good_quantity');
-            $table->timestamps();
+            $table->integer('total_price');
         });
 
         Schema::table('baskets_goods', function (Blueprint $table) {

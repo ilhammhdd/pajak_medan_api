@@ -16,7 +16,7 @@ class Basket extends Model
     protected $table = 'baskets';
 
     protected $fillable = [
-        'id', 'customer_id', 'total', 'description'
+        'id', 'customer_id', 'total', 'description', 'status'
     ];
 
     public function customer()
@@ -37,5 +37,10 @@ class Basket extends Model
     public function good()
     {
         return $this->belongsToMany('App\Good', 'baskets_goods', 'basket_id', 'good_id');
+    }
+
+    public function basketGood()
+    {
+        return $this->hasMany('App\BasketGoods', 'basket_id', 'id');
     }
 }

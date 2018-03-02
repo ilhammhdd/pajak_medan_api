@@ -18,6 +18,7 @@ class CreateBasketsTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->integer('total');
             $table->text('description');
+            $table->boolean('status');
             $table->timestamps();
         });
 

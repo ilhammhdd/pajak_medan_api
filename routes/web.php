@@ -23,9 +23,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->group(['middleware' => 'role:customer'], function () use ($router) {
-            $router->post('/get-categories', ['as' => 'customer.get_categories', 'uses' => 'CustomerController@getCategories']);
+            $router->post('/get-categories', ['as' => 'customer.get_categories', 'uses' => 'CategoryController@getCategories']);
             $router->post('/get-events', ['as' => 'customer.get_events', 'uses' => 'CustomerController@getEvents']);
-            $router->post('/get-goods', ['as' => 'customer.get_goods', 'uses' => 'CustomerController@getGoods']);
+            $router->post('/get-goods', ['as' => 'customer.get_goods', 'uses' => 'GoodController@getGoods']);
+            $router->post('/get-basket-goods', ['as' => 'customer.get_basket_goods', 'uses' => 'BasketGoodsController@getBasketGoods']);
+            $router->post('/get-basket', ['as' => 'customer.get_basket', 'uses' => 'BasketController@getBasket']);
         });
 
 //        $router->group(['middleware' => 'role:admin'], function () use ($router) {
