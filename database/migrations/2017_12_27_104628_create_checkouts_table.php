@@ -16,12 +16,17 @@ class CreateCheckoutsTable extends Migration
         Schema::create('checkouts', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('basket_id')->unsigned();
-            $table->boolean('status');
+            $table->integer('payment_id')->unsigned();
+            $table->integer('status_id')->unsigned();
+            $table->integer('checkout_unique_number')->unsigned();
             $table->timestamps();
         });
 
         Schema::table('checkouts', function (Blueprint $table) {
             $table->foreign('basket_id')->references('id')->on('baskets');
+            $table->foreign('payment_id')->references('id')->on('payments');
+            $table->foreign('status_id')->references('id')->on('status');
+            $table->foreign('checkout_unique_number')->references('number')->on('checkout_uniques');
         });
     }
 
@@ -34,6 +39,7 @@ class CreateCheckoutsTable extends Migration
     {
         Schema::table('checkouts', function (Blueprint $table) {
             $table->dropForeign('checkouts_basket_id_foreign');
+            $table->dropForeign('checkouts_payment_id_foreign');
         });
 
         Schema::dropIfExists('checkouts');

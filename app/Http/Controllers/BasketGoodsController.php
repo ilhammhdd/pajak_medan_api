@@ -30,13 +30,14 @@ class BasketGoodsController extends Controller
                 baskets.customer_id AS baskets_customer_id, 
                 baskets.total AS baskets_total, 
                 baskets.description AS baskets_description, 
-                baskets.status AS baskets_status, 
+                status.name AS basket_status_name,
                 baskets_goods.good_quantity AS baskets_goods_quantity, 
                 baskets_goods.total_price AS baskets_goods_total_price 
                 FROM baskets_goods  
                 LEFT JOIN goods ON baskets_goods.good_id = goods.id 
                 LEFT JOIN baskets ON baskets_goods.basket_id = baskets.id 
-                LEFT JOIN files ON goods.file_id = files.id 
+                LEFT JOIN files ON goods.file_id = files.id
+                LEFT JOIN status ON baskets.status_id = status.id 
                 WHERE baskets_goods.basket_id = ' . $request->json("data")["basket_id"]
         );
 

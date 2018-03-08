@@ -16,11 +16,26 @@ class Checkout extends Model
     protected $table = 'checkouts';
 
     protected $fillable = [
-        'id', 'basket_id', 'status'
+        'id', 'payment_id', 'basket_id', 'status_id'
     ];
 
     public function basket()
     {
-        return $this->belongsTo('App\Basket','basket_id','id');
+        return $this->belongsTo('App\Basket', 'basket_id', 'id');
+    }
+
+    public function payment()
+    {
+        return $this->belongsTo('App\Payment', 'payment_id', 'id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo('App\Status', 'status_id', 'id');
+    }
+
+    public function checkoutUnique()
+    {
+        return $this->belongsTo('App\CheckoutUnique', 'checkout_unique_number', 'number');
     }
 }

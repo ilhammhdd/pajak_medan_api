@@ -18,12 +18,13 @@ class CreateBasketsTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->integer('total');
             $table->text('description');
-            $table->boolean('status');
+            $table->integer('status_id')->unsigned();
             $table->timestamps();
         });
 
         Schema::table('baskets', function (Blueprint $table) {
             $table->foreign('customer_id')->references('id')->on('customers');
+            $table->foreign('status_id')->references('id')->on('status');
         });
     }
 

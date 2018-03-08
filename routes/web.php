@@ -27,7 +27,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->post('/get-events', ['as' => 'customer.get_events', 'uses' => 'CustomerController@getEvents']);
             $router->post('/get-goods', ['as' => 'customer.get_goods', 'uses' => 'GoodController@getGoods']);
             $router->post('/get-basket-goods', ['as' => 'customer.get_basket_goods', 'uses' => 'BasketGoodsController@getBasketGoods']);
-            $router->post('/get-basket', ['as' => 'customer.get_basket', 'uses' => 'BasketController@getBasket']);
+
+            $router->group(['middleware' => 'basket:basket_unfinished'], function() use($router){
+                $router->post('/get-basket', ['as' => 'customer.get_basket', 'uses' => 'BasketController@getBasket']);
+            });
+
+            $router->post('/get-payment-method', ['as' => 'customer.get_payment_method', 'uses' => 'CustomerController@getPaymentMethod']);
         });
 
 //        $router->group(['middleware' => 'role:admin'], function () use ($router) {

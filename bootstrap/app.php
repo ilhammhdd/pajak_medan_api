@@ -76,7 +76,8 @@ $app->singleton('filesystem', function ($app) {
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'role' => App\Http\Middleware\CheckRole::class
+    'role' => App\Http\Middleware\CheckRole::class,
+    'basket' => App\Http\Middleware\CheckBasketStatus::class
 ]);
 
 /*

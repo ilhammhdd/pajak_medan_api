@@ -28,4 +28,9 @@ class Customer extends Model
     {
         return $this->belongsTo('App\profile', 'profile_id', 'id');
     }
+
+    public function basket()
+    {
+        return $this->hasOne('App\Basket', 'customer_id', 'id');
+    }
 }

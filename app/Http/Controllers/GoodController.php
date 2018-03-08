@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 
 use App\Good;
 use App\Review;
+use App\User;
 use Illuminate\Http\Request;
 
 class GoodController extends Controller

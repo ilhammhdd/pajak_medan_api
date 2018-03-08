@@ -31,7 +31,7 @@ class Good extends Model
 
     public function basket()
     {
-        return $this->belongsToMany('App\Basket', 'baskets_goods', 'role_id', 'basket_id');
+        return $this->belongsToMany('App\Basket', 'baskets_goods', 'good_id', 'basket_id');
     }
 
     public function goodsReview()
