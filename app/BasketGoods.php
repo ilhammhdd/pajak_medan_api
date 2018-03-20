@@ -19,6 +19,8 @@ class BasketGoods extends Model
         'id', 'good_id', 'basket_id', 'good_quantity', 'total_price'
     ];
 
+    public $timestamps = false;
+
     public function basket()
     {
         return $this->belongsTo('App\Basket', 'basket_id', 'id');

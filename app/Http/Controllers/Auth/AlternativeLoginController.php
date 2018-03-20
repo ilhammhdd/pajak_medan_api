@@ -20,8 +20,11 @@ class AlternativeLoginController extends Controller
 
         if (!$loginType) {
             return response()->json([
-                'authenticated' => false,
-                'message' => "This type of login isn't allowed"
+                'success' => true,
+                'response_data' => [
+                    'authenticated' => false,
+                    'message' => "This type of login isn't allowed"
+                ]
             ]);
         }
 
@@ -59,30 +62,44 @@ class AlternativeLoginController extends Controller
                 $customer->save();
 
                 return response()->json([
-                    'authenticated' => true,
-                    'user' => $newUser,
-                    'profile' => $newUser->customer()->first()->profile()->first(),
-                    'customer' => $authUser->customer()->first(),
-                    'message' => 'Alternative login success, and new user has been created'
+                    'success' => true,
+                    'response_data' => [
+                        'authenticated' => true,
+                        'user' => $newUser,
+                        'profile' => $newUser->customer()->first()->profile()->first(),
+                        'customer' => $newUser->customer()->first(),
+                        'photo' => $newUser->file()->pluck('file_path')->first(),
+                        'message' => 'Alternative login success, and new user has been created'
+                    ],
                 ]);
             } elseif ($authUser->username == $request->json("data")["id"]) {
                 return response()->json([
-                    'authenticated' => true,
-                    'user' => $authUser,
-                    'profile' => $authUser->customer()->first()->profile()->first(),
-                    'customer' => $authUser->customer()->first(),
-                    'message' => 'Alternative login success'
+                    'success' => true,
+                    'response_data' => [
+                        'authenticated' => true,
+                        'user' => $authUser,
+                        'profile' => $authUser->customer()->first()->profile()->first(),
+                        'customer' => $authUser->customer()->first(),
+                        'photo' => $authUser->file()->pluck('file_path')->first(),
+                        'message' => 'Alternative login success'
+                    ],
                 ]);
             }
             return response()->json([
-                'authenticated' => false,
-                'email_taken' => true,
-                'message' => 'This email is already taken'
+                'success' => true,
+                'response_data' => [
+                    'authenticated' => false,
+                    'email_taken' => true,
+                    'message' => 'This email is already taken'
+                ],
             ]);
         }
         return response()->json([
-            'authenticated' => false,
-            'message' => 'An error has occured'
+            'success' => true,
+            'response_data' => [
+                'authenticated' => false,
+                'message' => 'An error has occured'
+            ],
         ]);
     }
 }

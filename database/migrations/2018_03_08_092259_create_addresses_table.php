@@ -15,13 +15,14 @@ class CreateAddressesTable extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('profile_id')->unsigned()->nullable();
-            $table->string('name');
+            $table->integer('customer_id')->unsigned()->nullable();
+            $table->text('name');
+            $table->boolean('main');
             $table->timestamps();
         });
 
         Schema::table('addresses', function (Blueprint $table) {
-            $table->foreign('profile_id')->references('id')->on('profiles');
+            $table->foreign('customer_id')->references('id')->on('customers');
         });
     }
 
@@ -33,7 +34,7 @@ class CreateAddressesTable extends Migration
     public function down()
     {
         Schema::table('addresses', function (Blueprint $table) {
-            $table->dropForeign('addresses_profile_id_foreign');
+            $table->dropForeign('addresses_customer_id_foreign');
         });
 
         Schema::dropIfExists('addresses');

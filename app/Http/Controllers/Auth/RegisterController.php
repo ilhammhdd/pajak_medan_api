@@ -15,12 +15,14 @@ class RegisterController extends Controller
 {
     public function register(Request $request)
     {
-        $user = User::where('email', $request->json("data")["email"])->first();
+        $user = User::where('email', $request->json("data")["email"])->orWhere('username', $request->json("data")["username"])->first();
         if ($user) {
             return response()->json([
                 'success' => true,
-                'registered' => false,
-                'message' => "User with this email is already exists"
+                'response_data' => [
+                    'registered' => false,
+                    'message' => -1
+                ]
             ]);
         }
 
@@ -49,15 +51,19 @@ class RegisterController extends Controller
         if (!($profileSaved && $userSaved && $customerSaved)) {
             return response()->json([
                 'success' => true,
-                'registered' => false,
-                'message' => "Registration failed"
+                'response_data' => [
+                    'registered' => false,
+                    'message' => -2
+                ]
             ]);
         }
 
         return response()->json([
             'success' => true,
-            'registered' => true,
-            'message' => "Registration successful"
+            'response_data' => [
+                'registered' => true,
+                'message' => 1
+            ]
         ]);
     }
 }

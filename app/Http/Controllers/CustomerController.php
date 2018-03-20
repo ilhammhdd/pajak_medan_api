@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Event;
 use App\Payment;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class CustomerController extends BaseController
@@ -24,8 +26,10 @@ class CustomerController extends BaseController
 
         return response()->json([
             'success' => true,
-            'message' => 'Successfully get all events',
-            'events' => $events
+            'response_data' => [
+                'message' => 'Successfully get all events',
+                'events' => $events
+            ]
         ]);
     }
 
@@ -45,8 +49,80 @@ class CustomerController extends BaseController
 
         return response()->json([
             'success' => true,
-            'message' => 'Successfully get all payment',
-            'payments' => $payments
+            'response_data' => [
+                'message' => 'Successfully get all payment',
+                'payments' => $payments
+            ]
+        ]);
+    }
+
+    public function getMainProfile(Request $request)
+    {
+        $profile = DB::select(
+            'SELECT
+            profiles.id AS profile_id,
+            profiles.full_name AS profile_full_name,
+            profiles.phone_number AS profile_phone_number,
+            profiles.email AS profile_email
+            FROM 
+            profiles
+            LEFT JOIN customers ON profiles.id=customers.profile_id
+            WHERE customers.id = :customer_id',
+            [
+                'customer_id' => $request->json("data")["customer_id"]
+            ]
+        );
+
+        if ($profile) {
+            return response()->json([
+                'success' => true,
+                'response_data' => [
+                    'profile' => $profile[0],
+                    'message' => "Successfully get the main profile"
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'response_data' => [
+                'profile' => $profile,
+                'message' => "There is no profile for this customer"
+            ]
+        ]);
+    }
+
+    public function getMainAddress(Request $request)
+    {
+        $mainAddress = DB::select(
+            '
+            SELECT 
+            addresses.id AS address_id,
+            addresses.customer_id,
+            addresses.name,
+            addresses.main
+            FROM addresses
+            WHERE customer_id = :customer_id
+            AND main = TRUE
+            ',
+            ['customer_id' => $request->json("data")["customer_id"]]
+        );
+
+        if ($mainAddress) {
+            return response()->json([
+                'success' => true,
+                'response_data' => [
+                    'main_address' => $mainAddress[0],
+                    'message' => 'Successfully get the main address'
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'response_data' => [
+                'message' => 'There are no main address for this customer'
+            ]
         ]);
     }
 }

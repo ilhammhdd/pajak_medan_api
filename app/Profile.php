@@ -16,13 +16,8 @@ class Profile extends Model
     protected $table = 'profiles';
 
     protected $fillable = [
-        'id', 'file_id', 'full_name', 'phone_number', 'email', 'address'
+        'id', 'full_name', 'phone_number', 'email', 'main'
     ];
-
-    public function file()
-    {
-        return $this->belongsTo('App\File', 'file_id', 'id');
-    }
 
     public function customer()
     {

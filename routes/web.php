@@ -28,9 +28,17 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->post('/get-goods', ['as' => 'customer.get_goods', 'uses' => 'GoodController@getGoods']);
             $router->post('/get-basket-goods', ['as' => 'customer.get_basket_goods', 'uses' => 'BasketGoodsController@getBasketGoods']);
 
-            $router->group(['middleware' => 'basket:basket_unfinished'], function() use($router){
+            $router->group(['middleware' => 'basket:basket_unfinished'], function () use ($router) {
                 $router->post('/get-basket', ['as' => 'customer.get_basket', 'uses' => 'BasketController@getBasket']);
+                $router->post('/get-good-in-basket', ['as' => 'customer.get_good_in_basket', 'uses' => 'BasketGoodsController@getGoodInBasket']);
+                $router->post('/buy-goods', ['as' => 'customer.buy_goods', 'uses' => 'GoodController@buyGoods']);
             });
+
+            /*$router->group(['middleware' => 'profile'], function () use ($router) {
+            });*/
+
+            $router->post('/get-main-profile', ['as' => 'customer.get_main_profile', 'uses' => 'CustomerController@getMainProfile']);
+            $router->post('/get-main-address',['as'=>'customer.get_main_address','uses'=>'CustomerController@getMainAddress']);
 
             $router->post('/get-payment-method', ['as' => 'customer.get_payment_method', 'uses' => 'CustomerController@getPaymentMethod']);
         });

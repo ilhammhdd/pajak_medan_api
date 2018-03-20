@@ -43,9 +43,45 @@ class BasketGoodsController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => "Successfully get all the goods in basket",
-            'basket_id' => $request->json("data")["basket_id"],
-            'basket_goods' => $basketGoods
+            'response_data' => [
+                'basket_id' => $request->json("data")["basket_id"],
+                'basket_goods' => $basketGoods,
+                'message' => "Successfully get all the goods in basket",
+            ],
+        ]);
+    }
+
+    public function getGoodInBasket(Request $request)
+    {
+        $goodInBasket = DB::select(
+            'SELECT
+            baskets_goods.good_quantity
+            FROM baskets_goods
+            JOIN baskets ON baskets_goods.basket_id = baskets.id
+            WHERE baskets_goods.good_id = :good_id
+            AND baskets.id = :basket_id',
+            [
+                'good_id' => $request->json("data")["good_id"],
+                'basket_id' => $request->get('basket')->id
+            ]
+        );
+
+        if ($goodInBasket == []) {
+            return response()->json([
+                'success' => true,
+                'response_data' => [
+                    'good_in_basket' => 0,
+                    'message' => 'This goods isn\'t exist in your basket'
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'response_data' => [
+                'good_in_basket' => $goodInBasket[0]->good_quantity,
+                'message' => 'This good exists in your basket'
+            ]
         ]);
     }
 }
