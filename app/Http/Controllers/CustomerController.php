@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Address;
 use App\Category;
 use App\Event;
 use App\Payment;
@@ -97,7 +98,7 @@ class CustomerController extends BaseController
         $mainAddress = DB::select(
             '
             SELECT 
-            addresses.id AS address_id,
+            addresses.id,
             addresses.customer_id,
             addresses.name,
             addresses.main
@@ -122,6 +123,19 @@ class CustomerController extends BaseController
             'success' => true,
             'response_data' => [
                 'message' => 'There are no main address for this customer'
+            ]
+        ]);
+    }
+
+    public function getAllAddresses(Request $request)
+    {
+        $address = Address::where('customer_id', $request->json("data")["customer_id"])->get();
+
+        return response()->json([
+            'success' => true,
+            'response_data' => [
+                'all_addresses' => $address,
+                'message' => 'Successfully get all addresses for this customer'
             ]
         ]);
     }
