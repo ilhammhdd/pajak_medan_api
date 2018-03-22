@@ -139,4 +139,27 @@ class CustomerController extends BaseController
             ]
         ]);
     }
+
+    public function postDeleteAddress(Request $request)
+    {
+        $deletStatus = Address::destroy($request->json("data")["address_id"]);
+
+        if ($deletStatus) {
+            return response()->json([
+                'success' => true,
+                'response_data' => [
+                    "deleted" => true,
+                    "message" => "Address successfully deleted"
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'response_data' => [
+                "deleted" => false,
+                "message" => "Failed to delete address"
+            ]
+        ]);
+    }
 }

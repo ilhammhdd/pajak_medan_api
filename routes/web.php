@@ -38,8 +38,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             });*/
 
             $router->post('/get-main-profile', ['as' => 'customer.get_main_profile', 'uses' => 'CustomerController@getMainProfile']);
-            $router->post('/get-main-address',['as'=>'customer.get_main_address','uses'=>'CustomerController@getMainAddress']);
-            $router->post('/get-all-addresses',['as'=>'customer.get_all_addresses','uses'=>'CustomerController@getAllAddresses']);
+            $router->post('/get-main-address', ['as' => 'customer.get_main_address', 'uses' => 'CustomerController@getMainAddress']);
+            $router->post('/get-all-addresses', ['as' => 'customer.get_all_addresses', 'uses' => 'CustomerController@getAllAddresses']);
+            $router->post('/post-delete-address', ['as' => 'customer.post_delete_address', 'uses' => 'CustomerController@postDeleteAddress']);
 
             $router->post('/get-payment-method', ['as' => 'customer.get_payment_method', 'uses' => 'CustomerController@getPaymentMethod']);
         });
