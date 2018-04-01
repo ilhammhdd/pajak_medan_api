@@ -32,6 +32,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
                 $router->post('/get-basket', ['as' => 'customer.get_basket', 'uses' => 'BasketController@getBasket']);
                 $router->post('/get-good-in-basket', ['as' => 'customer.get_good_in_basket', 'uses' => 'BasketGoodsController@getGoodInBasket']);
                 $router->post('/buy-goods', ['as' => 'customer.buy_goods', 'uses' => 'GoodController@buyGoods']);
+                $router->post('/post-issue-checkout', ['as' => 'customer.post_issue_payment', 'uses' => 'CheckoutController@issueCheckout']);
+                $router->post('/get-issued-checkout', ['as' => 'customer.get_issued_payment', 'uses' => 'CheckoutController@getIssuedCheckout']);
             });
 
             /*$router->group(['middleware' => 'profile'], function () use ($router) {
@@ -41,6 +43,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->post('/get-main-address', ['as' => 'customer.get_main_address', 'uses' => 'CustomerController@getMainAddress']);
             $router->post('/get-all-addresses', ['as' => 'customer.get_all_addresses', 'uses' => 'CustomerController@getAllAddresses']);
             $router->post('/post-delete-address', ['as' => 'customer.post_delete_address', 'uses' => 'CustomerController@postDeleteAddress']);
+            $router->post('/post-edit-address', ['as' => 'customer.post_edit_address', 'uses' => 'CustomerController@postEditAddress']);
+            $router->post('/post-add-address', ['as' => 'customer.post_add_address', 'uses' => 'CustomerController@postAddAddress']);
+            $router->post('/post-edit-profile', ['as' => 'customer.post_edit_profile', 'uses' => 'CustomerController@postEditProfile']);
 
             $router->post('/get-payment-method', ['as' => 'customer.get_payment_method', 'uses' => 'CustomerController@getPaymentMethod']);
         });

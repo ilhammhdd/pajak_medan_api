@@ -6,6 +6,7 @@ use App\Address;
 use App\Category;
 use App\Event;
 use App\Payment;
+use App\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -142,9 +143,9 @@ class CustomerController extends BaseController
 
     public function postDeleteAddress(Request $request)
     {
-        $deletStatus = Address::destroy($request->json("data")["address_id"]);
+        $deleteStatus = Address::destroy($request->json("data")["address_id"]);
 
-        if ($deletStatus) {
+        if ($deleteStatus) {
             return response()->json([
                 'success' => true,
                 'response_data' => [
@@ -161,5 +162,116 @@ class CustomerController extends BaseController
                 "message" => "Failed to delete address"
             ]
         ]);
+    }
+
+    public function postEditAddress(Request $request)
+    {
+        $editMain = false;
+        $successEditMainAddress = false;
+        $customerId = $request->json("data")["customer_id"];
+        $addressId = $request->json("data")["address_id"];
+
+        if ($request->json("data")["main"]) {
+            $mainAddress = Address::where([
+                ["customer_id", $customerId],
+                ["main", true]
+            ])->first();
+            if ($mainAddress) {
+                $editMain = true;
+                $mainAddress->main = 0;
+                $successEditMainAddress = $mainAddress->save();
+            }
+        }
+
+        $address = Address::where([
+            ["id", $addressId],
+            ["customer_id", $customerId]
+        ])->first();
+        $address->name = $request->json("data")["name"];
+        $address->main = $request->json("data")["main"] ? 1 : 0;
+        $successEditAddress = $address->save();
+
+        if ($editMain) {
+            if ($successEditAddress && $successEditMainAddress) {
+                return response()->json([
+                    'success' => true,
+                    'response_data' => [
+                        'edit_success' => true,
+                        'edited_address' => $address,
+                        'message' => "Successfully edited address"
+                    ]
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'response_data' => [
+                    'edit_success' => false,
+                    'message' => "Failed to edit address"
+                ]
+            ]);
+        }
+
+        if ($successEditAddress) {
+            return response()->json([
+                'success' => true,
+                'response_data' => [
+                    'edit_success' => true,
+                    'edited_address' => $address,
+                    'message' => "Successfully edited address"
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'response_data' => [
+                'edit_success' => false,
+                'message' => "Failed to edit address"
+            ]
+        ]);
+    }
+
+    public function postAddAddress(Request $request)
+    {
+        $newAddress = new Address();
+        $newAddress->customer_id = $request->json("data")["customer_id"];
+        $newAddress->name = $request->json("data")["name"];
+        $newAddress->main = $request->json("data")["main"];
+        $addNewAddressSuccess = $newAddress->save();
+
+        if ($request->json("data")["main"]) {
+            $mainAddress = Address::where([
+                ["customer_id", $request->json("data")["customer_id"]],
+                ["main", true]
+            ])->first();
+            if ($mainAddress) {
+                $mainAddress->main = 0;
+                $mainAddress->save();
+            }
+        }
+
+        if ($addNewAddressSuccess) {
+            return response()->json([
+                'success' => true,
+                'response_data' => [
+                    'add_success' => true,
+                    'message' => 'Successfully added new address'
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'response_data' => [
+                'add_success' => false,
+                'message' => 'Failed to add new address'
+            ]
+        ]);
+    }
+
+    public function postEditProfile(Request $request)
+    {
+        $mainProfile = Profile::find($request->json("data")["profile_id"]);
     }
 }
