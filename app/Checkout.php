@@ -18,7 +18,7 @@ class Checkout extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id', 'payment_id', 'basket_id', 'status_id', 'expired', 'checkout_unique_id'
+        'id', 'basket_id', 'payment_id', 'status_id', 'expired', 'issued'
     ];
 
     public function basket()

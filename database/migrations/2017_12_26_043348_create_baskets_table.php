@@ -17,9 +17,9 @@ class CreateBasketsTable extends Migration
             $table->increments('id');
             $table->integer('customer_id')->unsigned();
             $table->integer('total');
+            $table->integer('total_items');
             $table->text('description');
             $table->integer('status_id')->unsigned();
-            $table->timestamps();
         });
 
         Schema::table('baskets', function (Blueprint $table) {

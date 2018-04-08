@@ -20,7 +20,8 @@ class StatusTableSeeder extends Seeder
             ['id' => 5, 'name' => 'basket_finished'],
             ['id' => 6, 'name' => 'basket_unfinished'],
             ['id' => 7, 'name' => 'user_signedin'],
-            ['id' => 8, 'name' => 'user_signedout']
+            ['id' => 8, 'name' => 'user_signedout'],
+            ['id' => 9, 'name' => 'payment_expired']
         ]);
     }
 }

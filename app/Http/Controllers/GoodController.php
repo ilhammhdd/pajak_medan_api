@@ -81,6 +81,7 @@ class GoodController extends Controller
 
             $basket->customer_id = $request->json('data')['customer_id'];
             $basket->total = $basket->total + ($request->json('data')['good_quantity'] * $request->json('data')['good_price']);
+            $basket->total_items = ++$basket->total_items;
             $basket->description = "still no description";
             $basket->status_id = 6;
             $basket->save();

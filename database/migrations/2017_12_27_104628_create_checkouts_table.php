@@ -19,6 +19,7 @@ class CreateCheckoutsTable extends Migration
             $table->integer('payment_id')->unsigned();
             $table->integer('status_id')->unsigned();
             $table->dateTime('expired');
+            $table->dateTime('issued');
         });
 
         Schema::table('checkouts', function (Blueprint $table) {

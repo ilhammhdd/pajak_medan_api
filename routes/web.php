@@ -32,9 +32,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
                 $router->post('/get-basket', ['as' => 'customer.get_basket', 'uses' => 'BasketController@getBasket']);
                 $router->post('/get-good-in-basket', ['as' => 'customer.get_good_in_basket', 'uses' => 'BasketGoodsController@getGoodInBasket']);
                 $router->post('/buy-goods', ['as' => 'customer.buy_goods', 'uses' => 'GoodController@buyGoods']);
-                $router->post('/post-issue-checkout', ['as' => 'customer.post_issue_payment', 'uses' => 'CheckoutController@issueCheckout']);
-                $router->post('/get-issued-checkout', ['as' => 'customer.get_issued_payment', 'uses' => 'CheckoutController@getIssuedCheckout']);
+                $router->post('/post-issue-checkout', ['as' => 'customer.post_issue_checkout', 'uses' => 'CheckoutController@issueCheckout']);
             });
+
+            $router->post('/get-issued-checkout', ['as' => 'customer.get_issued_payment', 'uses' => 'CheckoutController@getIssuedCheckout']);
+            $router->post('/get-checkout-basket-goods', ['as' => 'customer.get_checkout_basket_goods', 'uses' => 'CheckoutController@getBasketGoods']);
+            $router->post('/get-payment-expired', ['as' => 'customer.get_payment_expired', 'uses' => 'CheckoutController@getPaymentExpired']);
 
             /*$router->group(['middleware' => 'profile'], function () use ($router) {
             });*/

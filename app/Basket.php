@@ -15,8 +15,10 @@ class Basket extends Model
 {
     protected $table = 'baskets';
 
+    public $timestamps = false;
+
     protected $fillable = [
-        'id', 'customer_id', 'total', 'description', 'status_id'
+        'id', 'customer_id', 'total', 'total_items', 'description', 'status_id'
     ];
 
     public function customer()
