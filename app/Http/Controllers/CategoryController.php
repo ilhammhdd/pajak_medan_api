@@ -27,12 +27,8 @@ class CategoryController extends Controller
             ];
         }
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'categories' => $categoriesInArray,
-                'message' => 'Successfully get all categories'
-            ]
-        ]);
+        return $this->jsonResponse([
+            'categories' => $categoriesInArray
+        ], true, 'berhasil mendapatkan semua catories');
     }
 }

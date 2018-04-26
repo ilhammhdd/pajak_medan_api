@@ -3,15 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Address;
-use App\Category;
 use App\Event;
 use App\Payment;
 use App\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Laravel\Lumen\Routing\Controller as BaseController;
 
-class CustomerController extends BaseController
+class CustomerController extends Controller
 {
     public function getEvents()
     {
@@ -26,13 +24,9 @@ class CustomerController extends BaseController
             ];
         }
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'message' => 'Successfully get all events',
-                'events' => $events
-            ]
-        ]);
+        return $this->jsonResponse([
+            'events' => $events
+        ], true, 'berhasil mendapatkan semua events');
     }
 
     public function getPaymentMethod()

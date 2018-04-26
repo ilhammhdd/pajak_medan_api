@@ -1,5 +1,6 @@
 <?php
 
+use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -13,9 +14,28 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->insert([
-            ['id' => 1, 'role_id' => 3, 'login_type_id' => 1, 'file_id' => null, 'email' => 'admin@admin.com', 'username' => 'admin', 'password' => Hash::make('pajakmedanjaya'), 'api_token' => \App\APITokenGenerator::generate()],
-            ['id' => 2, 'role_id' => 3, 'login_type_id' => 1, 'file_id' => null, 'email' => 'robert@gmail.com', 'username' => 'robert', 'password' => Hash::make('asd'), 'api_token' => \App\APITokenGenerator::generate()]
-        ]);
+        $controller = new \App\Http\Controllers\Controller();
+
+        $user1 = new User();
+        $user1->role_id = 3;
+        $user1->login_type_id = 1;
+        $user1->email = "martin@gmail.com";
+        $user1->username = "martin";
+        $user1->password = Hash::make("password");
+        $user1->save();
+
+        $user1->token = $controller->generateToken($user1);
+        $user1->save();
+
+        $user2 = new User();
+        $user2->role_id = 3;
+        $user2->login_type_id = 1;
+        $user2->email = "robert@gmail.com";
+        $user2->username = "robert";
+        $user2->password = Hash::make("password");
+        $user2->save();
+
+        $user2->token = $controller->generateToken($user2);
+        $user2->save();
     }
 }

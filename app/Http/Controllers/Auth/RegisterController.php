@@ -15,32 +15,35 @@ class RegisterController extends Controller
 {
     public function register(Request $request)
     {
-        $user = User::where('email', $request->json("data")["email"])->orWhere('username', $request->json("data")["username"])->first();
-        if ($user) {
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'registered' => false,
-                    'message' => -1
-                ]
-            ]);
-        }
+        $this->validate(
+            $request,
+            [
+                'data.auth_type' => 'required|exists:login_types,name',
+                'data.full_name' => 'required',
+                'data.phone_number' => 'required',
+                'data.email' => 'required|email|unique:users,email',
+                'data.username' => 'required|unique:users,username',
+                'data.password' => 'required'
+            ]
+        );
 
-        $authType = LoginType::where('name', $request->json("data")["auth_type"])->first();
+        $authType = LoginType::where('name', $request->json('data')['auth_type'])->first();
 
         $profile = new Profile();
-        $profile->full_name = $request->json('data')["fullName"];
-        $profile->phone_number = $request->json('data')["phoneNumber"];
-        $profile->email = $request->json('data')["email"];
+        $profile->full_name = $request->json('data')['full_name'];
+        $profile->phone_number = $request->json('data')['phone_number'];
+        $profile->email = $request->json('data')['email'];
         $profileSaved = $profile->save();
 
         $user = new User();
         $user->role_id = 3;
-        $user->email = $request->json('data')["email"];
-        $user->username = $request->json('data')["username"];
-        $user->password = Hash::make($request->json('data')["password"]);
-        $user->api_token = APITokenGenerator::generate();
+        $user->email = $request->json('data')['email'];
+        $user->username = $request->json('data')['username'];
+        $user->password = Hash::make($request->json('data')['password']);
         $user->loginType()->associate($authType);
+        $user->save();
+
+        $user->token = (string)$this->generateToken($user);
         $userSaved = $user->save();
 
         $customer = new Customer();
@@ -49,21 +52,9 @@ class RegisterController extends Controller
         $customerSaved = $customer->save();
 
         if (!($profileSaved && $userSaved && $customerSaved)) {
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'registered' => false,
-                    'message' => -2
-                ]
-            ]);
+            return $this->jsonResponse(null, true, "gagal register user", 500);
         }
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'registered' => true,
-                'message' => 1
-            ]
-        ]);
+        return $this->jsonResponse(null, false, "berhasil register user");
     }
 }

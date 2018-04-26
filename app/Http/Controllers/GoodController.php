@@ -19,6 +19,13 @@ class GoodController extends Controller
 {
     public function getGoods(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'data.category_id' => 'required|exists:categories,id'
+            ]
+        );
+
         $goods = Good::where('category_id', $request->json("data")["category_id"])->get();
         $goodsJsonArray = [];
 
@@ -36,13 +43,9 @@ class GoodController extends Controller
             ];
         }
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'message' => 'Successfully get all goods of the given category',
-                'goods' => $goodsJsonArray
-            ]
-        ]);
+        return $this->jsonResponse([
+            'goods' => $goodsJsonArray
+        ], true, 'berhasil mendapatkan goods berdasrakan category');
     }
 
     public function getReview(Request $request)
@@ -52,6 +55,16 @@ class GoodController extends Controller
 
     public function buyGoods(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'data.customer_id' => 'required|exists:customers,id',
+                'data.good_id' => 'required|exists:goods,id',
+                'data.good_quantity' => 'required',
+                'data.good_price' => 'required'
+            ]
+        );
+
         $goodInBasket = DB::select(
             'SELECT
             baskets_goods.id, 
@@ -86,14 +99,10 @@ class GoodController extends Controller
             $basket->status_id = 6;
             $basket->save();
 
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'basket_id' => $request->get('basket')->id,
-                    'basket_total' => $basket->total,
-                    'message' => 'Successfully created a new BasketGoods',
-                ]
-            ]);
+            return $this->jsonResponse([
+                'basket_id' => $request->get('basket')->id,
+                'basket_total' => $basket->total,
+            ], true, 'berhasil membuat basket_goods baru');
         }
 
         $basket->customer_id = $request->json('data')['customer_id'];
@@ -109,13 +118,9 @@ class GoodController extends Controller
         $basketGoods->total_price = $request->json('data')['good_price'] * $goodsQuantity;
         $basketGoods->save();
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'basket_id' => $request->get('basket')->id,
-                'basket_total' => $basket->total,
-                'message' => 'Successfully added goods to basket',
-            ]
-        ]);
+        return $this->jsonResponse([
+            'basket_id' => $request->get('basket')->id,
+            'basket_total' => $basket->total
+        ], true, 'berhasil menambahakan good kedalam basket');
     }
 }

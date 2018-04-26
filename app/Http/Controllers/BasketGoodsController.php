@@ -15,6 +15,13 @@ class BasketGoodsController extends Controller
 {
     public function getBasketGoods(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'data.basket_id' => 'required|exists:baskets,id'
+            ]
+        );
+
         $basketGoods = DB::select(
             'SELECT 
                 baskets_goods.id AS basket_goods_id, 
@@ -38,21 +45,27 @@ class BasketGoodsController extends Controller
                 LEFT JOIN baskets ON baskets_goods.basket_id = baskets.id 
                 LEFT JOIN files ON goods.file_id = files.id
                 LEFT JOIN status ON baskets.status_id = status.id 
-                WHERE baskets_goods.basket_id = ' . $request->json("data")["basket_id"]
+                WHERE baskets_goods.basket_id = :basket_id',
+            [
+                'basket_id' => $request->json("data")["basket_id"]
+            ]
         );
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'basket_id' => $request->json("data")["basket_id"],
-                'basket_goods' => $basketGoods,
-                'message' => "Successfully get all the goods in basket",
-            ],
-        ]);
+        return $this->jsonResponse([
+            'basket_id' => $request->json("data")["basket_id"],
+            'basket_goods' => $basketGoods,
+        ], true, 'berhasil mendapatkan semua goods didalam basket');
     }
 
     public function getGoodInBasket(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'data.good_id' => 'required|exists:goods,id'
+            ]
+        );
+
         $goodInBasket = DB::select(
             'SELECT
             baskets_goods.good_quantity
@@ -67,21 +80,13 @@ class BasketGoodsController extends Controller
         );
 
         if ($goodInBasket == []) {
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'good_in_basket' => 0,
-                    'message' => 'This goods isn\'t exist in your basket'
-                ]
-            ]);
+            return $this->jsonResponse([
+                'good_in_basket' => 0
+            ], false, 'goods tidak ditemukan di basket user');
         }
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'good_in_basket' => $goodInBasket[0]->good_quantity,
-                'message' => 'This good exists in your basket'
-            ]
-        ]);
+        return $this->jsonResponse([
+            'good_in_basket' => $goodInBasket[0]->good_quantity
+        ], true, 'goods ini ada di basket user');
     }
 }

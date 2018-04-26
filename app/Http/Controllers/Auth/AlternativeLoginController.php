@@ -16,23 +16,21 @@ class AlternativeLoginController extends Controller
 {
     public function checkUser(Request $request)
     {
-        $loginType = LoginType::where('name', $request->json("data")["auth_type"])->first();
+        $this->validate(
+            $request, [
+                'data.auth_type' => 'required|exists:login_types,name',
+                'data.email' => 'required|email',
+                'data.alternative_auth' => 'required',
+                'data.full_name' => 'required',
+                'data.id' => 'required'
+            ]
+        );
 
-        if (!$loginType) {
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'authenticated' => false,
-                    'message' => "This type of login isn't allowed"
-                ]
-            ]);
-        }
+        $loginType = LoginType::where('name', $request->json("data")["auth_type"])->first();
 
         if ($request->json("data")["alternative_auth"]) {
             $authUser = User::where('email', $request->json("data")["email"])->first();
             if (!$authUser) {
-                $newAPIToken = APITokenGenerator::generate();
-
                 $profile = new Profile();
                 $profile->full_name = $request->json('data')["full_name"];
                 $profile->email = $request->json('data')["email"];
@@ -43,7 +41,6 @@ class AlternativeLoginController extends Controller
                 $newUser->email = $request->json("data")["email"];
                 $newUser->username = $request->json("data")["id"];
                 $newUser->password = Hash::make("password");
-                $newUser->api_token = $newAPIToken;
                 $newUser->loginType()->associate($loginType);
 
                 if ($request->json("data")["photo_url"] != "null") {
@@ -56,50 +53,42 @@ class AlternativeLoginController extends Controller
 
                 $newUser->save();
 
+                $newUser->token = (string)$this->generateToken($newUser);
+                $newUser->save();
+
                 $customer = new Customer();
                 $customer->user()->associate($newUser);
                 $customer->profile()->associate($profile);
                 $customer->save();
 
-                return response()->json([
-                    'success' => true,
-                    'response_data' => [
-                        'authenticated' => true,
-                        'user' => $newUser,
-                        'profile' => $newUser->customer()->first()->profile()->first(),
-                        'customer' => $newUser->customer()->first(),
-                        'photo' => $newUser->file()->pluck('file_path')->first(),
-                        'message' => 'Alternative login success, and new user has been created'
-                    ],
-                ]);
+                return $this->jsonResponse([
+                    'authenticated' => true,
+                    'user' => $newUser,
+                    'profile' => $newUser->customer()->first()->profile()->first(),
+                    'customer' => $newUser->customer()->first(),
+                    'photo' => $newUser->file()->pluck('file_path')->first()
+                ], true, 'berhasil membuat user baru dengan login alternatif');
             } elseif ($authUser->username == $request->json("data")["id"]) {
-                return response()->json([
-                    'success' => true,
-                    'response_data' => [
-                        'authenticated' => true,
-                        'user' => $authUser,
-                        'profile' => $authUser->customer()->first()->profile()->first(),
-                        'customer' => $authUser->customer()->first(),
-                        'photo' => $authUser->file()->pluck('file_path')->first(),
-                        'message' => 'Alternative login success'
-                    ],
-                ]);
+
+                return $this->jsonResponse([
+                    'authenticated' => true,
+                    'user' => $authUser,
+                    'profile' => $authUser->customer()->first()->profile()->first(),
+                    'customer' => $authUser->customer()->first(),
+                    'photo' => $authUser->file()->pluck('file_path')->first()
+                ], true, 'berhasil login alternatif');
             }
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'authenticated' => false,
-                    'email_taken' => true,
-                    'message' => 'This email is already taken'
-                ],
-            ]);
-        }
-        return response()->json([
-            'success' => true,
-            'response_data' => [
+
+            return $this->jsonResponse([
                 'authenticated' => false,
-                'message' => 'An error has occured'
-            ],
-        ]);
+                'email_taken' => true,
+                'message' => 'This email is already taken'
+            ], false, 'gagal login alternatif', 403);
+        }
+
+        return $this->jsonResponse([
+            'authenticated' => false,
+            'message' => 'An error has occured'
+        ], false, 'telah terjadi error', 500);
     }
 }

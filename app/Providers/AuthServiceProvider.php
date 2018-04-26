@@ -5,6 +5,9 @@ namespace App\Providers;
 use App\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\ValidationData;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -31,9 +34,23 @@ class AuthServiceProvider extends ServiceProvider
         // the User instance via an API token or any other method necessary.
 
         $this->app['auth']->viaRequest('api', function ($request) {
-            if ($request->json("data")['api_token']) {
-                return User::where('api_token', $request->json("data")['api_token'])->first();
+            if ($request->headers->get('X-PajakMedan-Token')) {
+                $token = (new Parser())->parse((string)$request->headers->get('X-PajakMedan-Token'));
+
+                if (!$token->validate(new ValidationData())) {
+                    return null;
+                }
+
+                if ($token->verify(new Sha256(), "TLOJQgY8Ppy7aJp5skaKDejqxAvK36VT")) {
+                    $user = User::find($token->getClaim('id'));
+                    if ($user->token == (string)$token) {
+                        return $user;
+                    }
+                }
+                return null;
             }
+            return null;
         });
+        return null;
     }
 }

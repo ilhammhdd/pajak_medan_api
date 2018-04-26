@@ -21,18 +21,14 @@ class BasketController extends Controller
         $basket = $request->get('basket');
         $statusName = Status::find($basket->status_id);
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'message' => "Successfully get the basket of the user",
-                'basket' => [
-                    'id' => $basket->id,
-                    'customer_id' => $basket->customer_id,
-                    'total' => $basket->total,
-                    'description' => $basket->description,
-                    'status_name' => $statusName->name
-                ]
+        return $this->jsonResponse([
+            'basket' => [
+                'id' => $basket->id,
+                'customer_id' => $basket->customer_id,
+                'total' => $basket->total,
+                'description' => $basket->description,
+                'status_name' => $statusName->name
             ]
-        ]);
+        ], true, 'berhsil mendapatkan basker dari user tersebut');
     }
 }
