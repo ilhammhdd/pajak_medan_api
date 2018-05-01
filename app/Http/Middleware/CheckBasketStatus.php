@@ -16,20 +16,6 @@ class CheckBasketStatus
 {
     public function handle($request, Closure $next, $status)
     {
-//        $basket = DB::select(
-//            'SELECT
-//            baskets.id,
-//            baskets.customer_id,
-//            baskets.total,
-//            baskets.description,
-//            baskets.status_id
-//            FROM baskets
-//            LEFT JOIN status ON baskets.status_id = status.id
-//            WHERE baskets.customer_id = ' . $request->json("data")["customer_id"] . '
-//            AND status.name = :status',
-//            ['status' => $status]
-//        );
-
         $basket = DB::select(
             'SELECT 
             baskets.id,

@@ -18,28 +18,28 @@ class RegisterController extends Controller
         $this->validate(
             $request,
             [
-                'data.auth_type' => 'required|exists:login_types,name',
-                'data.full_name' => 'required',
-                'data.phone_number' => 'required',
-                'data.email' => 'required|email|unique:users,email',
-                'data.username' => 'required|unique:users,username',
-                'data.password' => 'required'
+                'auth_type' => 'required|exists:login_types,name',
+                'full_name' => 'required',
+                'phone_number' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'username' => 'required|unique:users,username',
+                'password' => 'required'
             ]
         );
 
-        $authType = LoginType::where('name', $request->json('data')['auth_type'])->first();
+        $authType = LoginType::where('name', $request->json('auth_type'))->first();
 
         $profile = new Profile();
-        $profile->full_name = $request->json('data')['full_name'];
-        $profile->phone_number = $request->json('data')['phone_number'];
-        $profile->email = $request->json('data')['email'];
+        $profile->full_name = $request->json('full_name');
+        $profile->phone_number = $request->json('phone_number');
+        $profile->email = $request->json('email');
         $profileSaved = $profile->save();
 
         $user = new User();
         $user->role_id = 3;
-        $user->email = $request->json('data')['email'];
-        $user->username = $request->json('data')['username'];
-        $user->password = Hash::make($request->json('data')['password']);
+        $user->email = $request->json('email');
+        $user->username = $request->json('username');
+        $user->password = Hash::make($request->json('password'));
         $user->loginType()->associate($authType);
         $user->save();
 

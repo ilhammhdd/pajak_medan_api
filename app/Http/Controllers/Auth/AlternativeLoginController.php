@@ -18,34 +18,34 @@ class AlternativeLoginController extends Controller
     {
         $this->validate(
             $request, [
-                'data.auth_type' => 'required|exists:login_types,name',
-                'data.email' => 'required|email',
-                'data.alternative_auth' => 'required',
-                'data.full_name' => 'required',
-                'data.id' => 'required'
+                'auth_type' => 'required|exists:login_types,name',
+                'email' => 'required|email',
+                'alternative_auth' => 'required',
+                'full_name' => 'required',
+                'id' => 'required'
             ]
         );
 
-        $loginType = LoginType::where('name', $request->json("data")["auth_type"])->first();
+        $loginType = LoginType::where('name', $request->json('auth_type'))->first();
 
-        if ($request->json("data")["alternative_auth"]) {
-            $authUser = User::where('email', $request->json("data")["email"])->first();
+        if ($request->json('alternative_auth')) {
+            $authUser = User::where('email', $request->json('email'))->first();
             if (!$authUser) {
                 $profile = new Profile();
-                $profile->full_name = $request->json('data')["full_name"];
-                $profile->email = $request->json('data')["email"];
+                $profile->full_name = $request->json('full_name');
+                $profile->email = $request->json('email');
                 $profile->save();
 
                 $newUser = new User();
                 $newUser->role_id = 3;
-                $newUser->email = $request->json("data")["email"];
-                $newUser->username = $request->json("data")["id"];
+                $newUser->email = $request->json('email');
+                $newUser->username = $request->json('id');
                 $newUser->password = Hash::make("password");
                 $newUser->loginType()->associate($loginType);
 
-                if ($request->json("data")["photo_url"] != "null") {
+                if ($request->json('photo_url') != "null") {
                     $profilePhoto = new File();
-                    $profilePhoto->file_path = $request->json("data")["photo_url"];
+                    $profilePhoto->file_path = $request->json('photo_url');
                     $profilePhoto->file_name = "profile photo";
                     $profilePhoto->save();
                     $newUser->file()->associate($profilePhoto);
@@ -68,7 +68,7 @@ class AlternativeLoginController extends Controller
                     'customer' => $newUser->customer()->first(),
                     'photo' => $newUser->file()->pluck('file_path')->first()
                 ], true, 'berhasil membuat user baru dengan login alternatif');
-            } elseif ($authUser->username == $request->json("data")["id"]) {
+            } elseif ($authUser->username == $request->json('id')) {
 
                 return $this->jsonResponse([
                     'authenticated' => true,

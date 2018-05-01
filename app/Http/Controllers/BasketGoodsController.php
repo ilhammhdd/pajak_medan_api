@@ -18,7 +18,7 @@ class BasketGoodsController extends Controller
         $this->validate(
             $request,
             [
-                'data.basket_id' => 'required|exists:baskets,id'
+                'basket_id' => 'required|exists:baskets,id'
             ]
         );
 
@@ -47,12 +47,12 @@ class BasketGoodsController extends Controller
                 LEFT JOIN status ON baskets.status_id = status.id 
                 WHERE baskets_goods.basket_id = :basket_id',
             [
-                'basket_id' => $request->json("data")["basket_id"]
+                'basket_id' => $request->json('basket_id')
             ]
         );
 
         return $this->jsonResponse([
-            'basket_id' => $request->json("data")["basket_id"],
+            'basket_id' => $request->json('basket_id'),
             'basket_goods' => $basketGoods,
         ], true, 'berhasil mendapatkan semua goods didalam basket');
     }
@@ -62,7 +62,7 @@ class BasketGoodsController extends Controller
         $this->validate(
             $request,
             [
-                'data.good_id' => 'required|exists:goods,id'
+                'good_id' => 'required|exists:goods,id'
             ]
         );
 
@@ -74,7 +74,7 @@ class BasketGoodsController extends Controller
             WHERE baskets_goods.good_id = :good_id
             AND baskets.id = :basket_id',
             [
-                'good_id' => $request->json("data")["good_id"],
+                'good_id' => $request->json('good_id'),
                 'basket_id' => $request->get('basket')->id
             ]
         );

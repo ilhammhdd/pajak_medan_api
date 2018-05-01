@@ -41,14 +41,9 @@ class CheckoutController extends Controller
         $saveCheckoutSuccess = $checkout->save();
 
         if ($saveBasketSuccess && $saveCheckoutSuccess) {
-            return response()->json([
-                "success" => true,
-                "message" => "Successfully issued the checkout."
-            ]);
+            return $this->jsonResponse(null, true, "Successfully issued the checkout.");
         }
-        return response()->json([
-            "success" => false,
-            "message" => "Failed to issue the checkout."]);
+        return $this->jsonResponse(null, false, "Failed to issue the checkout.", 500);
     }
 
     public function getIssuedCheckout(Request $request)

@@ -30,9 +30,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
             $router->group(['middleware' => 'basket:basket_unfinished'], function () use ($router) {
                 $router->post('/get-basket', ['as' => 'customer.get_basket', 'uses' => 'BasketController@getBasket']);
+//===================================================================================================================================================================
                 $router->post('/get-good-in-basket', ['as' => 'customer.get_good_in_basket', 'uses' => 'BasketGoodsController@getGoodInBasket']);
+//===================================================================================================================================================================
                 $router->post('/buy-goods', ['as' => 'customer.buy_goods', 'uses' => 'GoodController@buyGoods']);
                 $router->post('/post-issue-checkout', ['as' => 'customer.post_issue_checkout', 'uses' => 'CheckoutController@issueCheckout']);
+                /*
+                 * Tidied up to here
+                 * */
             });
 
             $router->get('/get-issued-checkout', ['as' => 'customer.get_issued_payment', 'uses' => 'CheckoutController@getIssuedCheckout']);

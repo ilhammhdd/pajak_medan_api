@@ -18,15 +18,14 @@ class BasketController extends Controller
 {
     public function getBasket(Request $request)
     {
-        $basket = $request->get('basket');
-        $statusName = Status::find($basket->status_id);
+        $statusName = Status::find($request->get('basket')->id);
 
         return $this->jsonResponse([
             'basket' => [
-                'id' => $basket->id,
-                'customer_id' => $basket->customer_id,
-                'total' => $basket->total,
-                'description' => $basket->description,
+                'id' => $request->get('basket')->id,
+                'customer_id' => $request->get('basket')->customer_id,
+                'total' => $request->get('basket')->total,
+                'description' => $request->get('basket')->description,
                 'status_name' => $statusName->name
             ]
         ], true, 'berhsil mendapatkan basker dari user tersebut');
