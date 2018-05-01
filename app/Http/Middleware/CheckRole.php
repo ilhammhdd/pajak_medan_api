@@ -17,6 +17,12 @@ class CheckRole
     public function handle($request, Closure $next, $role)
     {
         if ($request->user()->role->name == $role) {
+            $customer = $request->user()->customer;
+            $profile = $request->user()->customer->profile;
+            $request->attributes->add([
+                'customer' => $customer,
+                'profile' => $profile
+            ]);
             return $next($request);
         }
 

@@ -19,15 +19,23 @@ class CheckoutController extends Controller
 {
     public function issueCheckout(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'data.payment_id' => 'required|exists:payments,id',
+                'data.expired' => 'required|date_format:Y-m-d H:i:s',
+                'data.issued' => 'required|date_format:Y-m-d H:i:s'
+            ]
+        );
+
         $basket = Basket::find($request->get('basket')->id);
         $basket->status_id = 5;
         $saveBasketSuccess = $basket->save();
 
         $checkout = new Checkout();
         $checkout->payment_id = $request->json("data")["payment_id"];
-//        $checkout->basket_id = $request->json("data")["basket_id"];
         $checkout->basket_id = $request->get('basket')->id;
-        $checkout->status_id = $request->json("data")["status_id"];
+        $checkout->status_id = 2;
         $checkout->expired = $request->json("data")["expired"];
         $checkout->issued = $request->json("data")["issued"];
         $saveCheckoutSuccess = $checkout->save();
@@ -45,7 +53,7 @@ class CheckoutController extends Controller
 
     public function getIssuedCheckout(Request $request)
     {
-        event(new CheckoutExpiredEvent($request->json("data")["customer_id"]));
+        event(new CheckoutExpiredEvent($request->get('customer')->id));
 
         $orders = DB::select(
             'SELECT 
@@ -59,20 +67,29 @@ class CheckoutController extends Controller
             JOIN checkouts ON checkouts.basket_id = baskets.id
             JOIN status ON status.id = checkouts.status_id
             WHERE baskets.customer_id = :customer_id',
-            ['customer_id' => $request->json("data")["customer_id"]]
+            [
+                'customer_id' => $request->get('customer')->id
+            ]
         );
 
-        return response()->json([
-            "success" => true,
-            "response_data" => [
-                "orders" => $orders,
-                "message" => "Successfully get all checkouts"
-            ]
-        ]);
+        if (count($orders) != 0) {
+            return $this->jsonResponse([
+                'orders' => $orders
+            ], true, 'Successfully get all checkouts');
+        }
+
+        return $this->jsonResponse(null, false, 'There is no checkout for this user', 404);
     }
 
     public function getBasketGoods(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'data.checkout_id' => 'required|exists:checkouts,id'
+            ]
+        );
+
         $checkoutBasketGoods = DB::select(
             'SELECT 
                 baskets_goods.id AS basket_goods_id, 
@@ -100,34 +117,29 @@ class CheckoutController extends Controller
                 WHERE checkouts.id = ' . $request->json("data")["checkout_id"]
         );
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'checkout_basket_goods' => $checkoutBasketGoods,
-                'message' => "Successfully get all the goods in basket",
-            ]
-        ]);
+
+        return $this->jsonResponse([
+            'checkout_basket_goods' => $checkoutBasketGoods
+        ], true, "Successfully get the goods in the basket of this checkout");
     }
 
     public function getPaymentExpired(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'data.checkout_id' => 'required|exists:checkouts,id'
+            ]
+        );
+
         $checkout = Checkout::find($request->json("data")["checkout_id"]);
 
         if ($checkout->status_id == 2) {
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'expired_time' => $checkout->expired,
-                    'message' => 'Successfully get the expired time of the given checkout'
-                ]
-            ]);
+            return $this->jsonResponse([
+                'expired_time' => $checkout->expired
+            ], true, 'Successfully get the expired time of the given checkout');
         }
 
-        return response()->json([
-            'success' => false,
-            'response_data' => [
-                'message' => 'The checkout is failed or expired'
-            ]
-        ]);
+        return $this->jsonResponse(null, false, 'The checkout is failed or expired', 404);
     }
 }

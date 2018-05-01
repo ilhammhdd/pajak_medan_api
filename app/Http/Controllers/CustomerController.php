@@ -43,13 +43,12 @@ class CustomerController extends Controller
             ];
         }
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'message' => 'Successfully get all payment',
+        if (count($payments) != 0) {
+            $this->jsonResponse([
                 'payments' => $payments
-            ]
-        ]);
+            ], true, 'Successfully get all payment');
+        }
+        return $this->jsonResponse(null, false, 'There are no payment method', 404);
     }
 
     public function getMainProfile(Request $request)
@@ -65,27 +64,17 @@ class CustomerController extends Controller
             LEFT JOIN customers ON profiles.id=customers.profile_id
             WHERE customers.id = :customer_id',
             [
-                'customer_id' => $request->json("data")["customer_id"]
+                'customer_id' => $request->get('customer')->id
             ]
         );
 
         if ($profile) {
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'profile' => $profile[0],
-                    'message' => "Successfully get the main profile"
-                ]
-            ]);
+            return $this->jsonResponse([
+                'profile' => $profile[0]
+            ], true, "Successfully get the main profile");
         }
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'profile' => $profile,
-                'message' => "There is no profile for this customer"
-            ]
-        ]);
+        return $this->jsonResponse(null, false, "There is no profile for this customer", 404);
     }
 
     public function getMainAddress(Request $request)
@@ -101,73 +90,71 @@ class CustomerController extends Controller
             WHERE customer_id = :customer_id
             AND main = TRUE
             ',
-            ['customer_id' => $request->json("data")["customer_id"]]
+            ['customer_id' => $request->get('customer')->id]
         );
 
         if ($mainAddress) {
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'main_address' => $mainAddress[0],
-                    'message' => 'Successfully get the main address'
-                ]
-            ]);
+            return $this->jsonResponse([
+                'main_address' => $mainAddress[0]
+            ], true, 'Successfully get the main address');
         }
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'message' => 'There are no main address for this customer'
-            ]
-        ]);
+        return $this->jsonResponse(null, false, 'There are no main address for this customer', 404);
     }
 
     public function getAllAddresses(Request $request)
     {
-        $address = Address::where('customer_id', $request->json("data")["customer_id"])->get();
+        $address = Address::where('customer_id', $request->get('customer')->id)->get();
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                'all_addresses' => $address,
-                'message' => 'Successfully get all addresses for this customer'
-            ]
-        ]);
+        if (count($address) != 0) {
+            return $this->jsonResponse([
+                'all_addresses' => $address
+            ], true, 'Successfully get all addresses for this customer');
+        }
+
+        return $this->jsonResponse(null, false, 'There is no address for this customer', 404);
     }
 
     public function postDeleteAddress(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'data.address_id' => 'required|exists:addresses,id'
+            ]
+        );
+
         $deleteStatus = Address::destroy($request->json("data")["address_id"]);
 
         if ($deleteStatus) {
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    "deleted" => true,
-                    "message" => "Address successfully deleted"
-                ]
-            ]);
+            return $this->jsonResponse([
+                "deleted" => true
+            ], true, "Address successfully deleted");
         }
 
-        return response()->json([
-            'success' => true,
-            'response_data' => [
-                "deleted" => false,
-                "message" => "Failed to delete address"
-            ]
-        ]);
+        return $this->jsonResponse([
+            "deleted" => false
+        ], false, "Failed to delete address", 500);
     }
 
     public function postEditAddress(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'data.address_id' => 'required|exists:addresses,id',
+                'data.name' => 'required',
+                'data.main' => 'required'
+            ]
+        );
+
         $editMain = false;
         $successEditMainAddress = false;
-        $customerId = $request->json("data")["customer_id"];
         $addressId = $request->json("data")["address_id"];
 
         if ($request->json("data")["main"]) {
             $mainAddress = Address::where([
-                ["customer_id", $customerId],
+                ["customer_id", $request->get('customer')->id],
                 ["main", true]
             ])->first();
             if ($mainAddress) {
@@ -179,7 +166,7 @@ class CustomerController extends Controller
 
         $address = Address::where([
             ["id", $addressId],
-            ["customer_id", $customerId]
+            ["customer_id", $request->get('customer')->id]
         ])->first();
         $address->name = $request->json("data")["name"];
         $address->main = $request->json("data")["main"] ? 1 : 0;
@@ -187,56 +174,48 @@ class CustomerController extends Controller
 
         if ($editMain) {
             if ($successEditAddress && $successEditMainAddress) {
-                return response()->json([
-                    'success' => true,
-                    'response_data' => [
-                        'edit_success' => true,
-                        'edited_address' => $address,
-                        'message' => "Successfully edited address"
-                    ]
-                ]);
+                return $this->jsonResponse([
+                    'edit_success' => true,
+                    'edited_address' => $address
+                ], true, "Successfully edited address");
             }
 
-            return response()->json([
-                'success' => false,
-                'response_data' => [
-                    'edit_success' => false,
-                    'message' => "Failed to edit address"
-                ]
-            ]);
+            return $this->jsonResponse([
+                'edit_success' => false,
+            ], false, "Failed to edit address", 500);
         }
 
         if ($successEditAddress) {
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'edit_success' => true,
-                    'edited_address' => $address,
-                    'message' => "Successfully edited address"
-                ]
-            ]);
+            return $this->jsonResponse([
+                'edit_success' => true,
+                'edited_address' => $address
+            ], true, "Successfully edited address");
         }
 
-        return response()->json([
-            'success' => false,
-            'response_data' => [
-                'edit_success' => false,
-                'message' => "Failed to edit address"
-            ]
-        ]);
+        return $this->jsonResponse([
+            'edit_success' => false
+        ], false, "Failed to edit address", 500);
     }
 
     public function postAddAddress(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'data.name' => 'required',
+                'data.main' => 'required'
+            ]
+        );
+
         $newAddress = new Address();
-        $newAddress->customer_id = $request->json("data")["customer_id"];
+        $newAddress->customer_id = $request->get('customer')->id;
         $newAddress->name = $request->json("data")["name"];
         $newAddress->main = $request->json("data")["main"];
         $addNewAddressSuccess = $newAddress->save();
 
         if ($request->json("data")["main"]) {
             $mainAddress = Address::where([
-                ["customer_id", $request->json("data")["customer_id"]],
+                ["customer_id", $request->get('customer')->id],
                 ["main", true]
             ])->first();
             if ($mainAddress) {
@@ -246,26 +225,35 @@ class CustomerController extends Controller
         }
 
         if ($addNewAddressSuccess) {
-            return response()->json([
-                'success' => true,
-                'response_data' => [
-                    'add_success' => true,
-                    'message' => 'Successfully added new address'
-                ]
-            ]);
+            return $this->jsonResponse([
+                'add_success' => true
+            ], true, 'Successfully added new address');
         }
 
-        return response()->json([
-            'success' => false,
-            'response_data' => [
-                'add_success' => false,
-                'message' => 'Failed to add new address'
-            ]
-        ]);
+        return $this->jsonResponse([
+            'add_success' => false
+        ], true, 'Failed to add new address');
     }
 
     public function postEditProfile(Request $request)
     {
-        $mainProfile = Profile::find($request->json("data")["profile_id"]);
+        $this->validate(
+            $request,
+            [
+                'data.full_name' => 'required',
+                'data.phone_number' => 'required'
+            ]
+        );
+
+        $profile = Profile::find($request->get('customer')->profile_id);
+        $profile->full_name = $request->json('data')["full_name"];
+        $profile->phone_number = $request->json('data')["phone_number"];
+        $saveProfile = $profile->save();
+
+        if ($saveProfile) {
+            return $this->jsonResponse(null, true, 'Successfully edit the profile');
+        }
+
+        return $this->jsonResponse(null, false, 'Failed to edit the profile');
     }
 }
