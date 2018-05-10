@@ -18,7 +18,7 @@ class BasketController extends Controller
 {
     public function getBasket(Request $request)
     {
-        $statusName = Status::find($request->get('basket')->id);
+        $statusName = Status::find($request->get('basket')->status_id);
 
         return $this->jsonResponse([
             'basket' => [

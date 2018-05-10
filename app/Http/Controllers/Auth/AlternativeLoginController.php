@@ -79,16 +79,9 @@ class AlternativeLoginController extends Controller
                 ], true, 'berhasil login alternatif');
             }
 
-            return $this->jsonResponse([
-                'authenticated' => false,
-                'email_taken' => true,
-                'message' => 'This email is already taken'
-            ], false, 'gagal login alternatif', 403);
+            return $this->jsonResponse(null, false, 'gagal login alternatif', 403);
         }
 
-        return $this->jsonResponse([
-            'authenticated' => false,
-            'message' => 'An error has occured'
-        ], false, 'telah terjadi error', 500);
+        return $this->jsonResponse(null, false, 'telah terjadi error', 500);
     }
 }

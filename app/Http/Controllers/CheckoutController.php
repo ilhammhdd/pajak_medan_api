@@ -22,9 +22,9 @@ class CheckoutController extends Controller
         $this->validate(
             $request,
             [
-                'data.payment_id' => 'required|exists:payments,id',
-                'data.expired' => 'required|date_format:Y-m-d H:i:s',
-                'data.issued' => 'required|date_format:Y-m-d H:i:s'
+                'payment_id' => 'required|exists:payments,id',
+                'expired' => 'required|date_format:Y-m-d H:i:s',
+                'issued' => 'required|date_format:Y-m-d H:i:s'
             ]
         );
 
@@ -33,11 +33,11 @@ class CheckoutController extends Controller
         $saveBasketSuccess = $basket->save();
 
         $checkout = new Checkout();
-        $checkout->payment_id = $request->json("data")["payment_id"];
+        $checkout->payment_id = $request->json('payment_id');
         $checkout->basket_id = $request->get('basket')->id;
         $checkout->status_id = 2;
-        $checkout->expired = $request->json("data")["expired"];
-        $checkout->issued = $request->json("data")["issued"];
+        $checkout->expired = $request->json('expired');
+        $checkout->issued = $request->json('issued');
         $saveCheckoutSuccess = $checkout->save();
 
         if ($saveBasketSuccess && $saveCheckoutSuccess) {
@@ -81,7 +81,7 @@ class CheckoutController extends Controller
         $this->validate(
             $request,
             [
-                'data.checkout_id' => 'required|exists:checkouts,id'
+                'checkout_id' => 'required|exists:checkouts,id'
             ]
         );
 
@@ -109,7 +109,7 @@ class CheckoutController extends Controller
                 LEFT JOIN checkouts ON baskets.id = checkouts.basket_id 
                 LEFT JOIN files ON goods.file_id = files.id
                 LEFT JOIN status ON baskets.status_id = status.id 
-                WHERE checkouts.id = ' . $request->json("data")["checkout_id"]
+                WHERE checkouts.id = ' . $request->get('checkout_id')
         );
 
 
@@ -123,11 +123,11 @@ class CheckoutController extends Controller
         $this->validate(
             $request,
             [
-                'data.checkout_id' => 'required|exists:checkouts,id'
+                'checkout_id' => 'required|exists:checkouts,id'
             ]
         );
 
-        $checkout = Checkout::find($request->json("data")["checkout_id"]);
+        $checkout = Checkout::find($request->json('checkout_id'));
 
         if ($checkout->status_id == 2) {
             return $this->jsonResponse([

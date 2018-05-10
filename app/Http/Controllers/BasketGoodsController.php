@@ -79,10 +79,8 @@ class BasketGoodsController extends Controller
             ]
         );
 
-        if ($goodInBasket == []) {
-            return $this->jsonResponse([
-                'good_in_basket' => 0
-            ], false, 'goods tidak ditemukan di basket user');
+        if (count($goodInBasket) == 0) {
+            return $this->jsonResponse(null, false, 'goods tidak ditemukan di basket user');
         }
 
         return $this->jsonResponse([

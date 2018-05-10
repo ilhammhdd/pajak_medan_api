@@ -29,30 +29,36 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->post('/get-basket-goods', ['as' => 'customer.get_basket_goods', 'uses' => 'BasketGoodsController@getBasketGoods']);
 
             $router->group(['middleware' => 'basket:basket_unfinished'], function () use ($router) {
-                $router->post('/get-basket', ['as' => 'customer.get_basket', 'uses' => 'BasketController@getBasket']);
+                $router->get('/get-basket', ['as' => 'customer.get_basket', 'uses' => 'BasketController@getBasket']);
 //===================================================================================================================================================================
                 $router->post('/get-good-in-basket', ['as' => 'customer.get_good_in_basket', 'uses' => 'BasketGoodsController@getGoodInBasket']);
 //===================================================================================================================================================================
                 $router->post('/buy-goods', ['as' => 'customer.buy_goods', 'uses' => 'GoodController@buyGoods']);
                 $router->post('/post-issue-checkout', ['as' => 'customer.post_issue_checkout', 'uses' => 'CheckoutController@issueCheckout']);
-                /*
-                 * Tidied up to here
-                 * */
             });
 
             $router->get('/get-issued-checkout', ['as' => 'customer.get_issued_payment', 'uses' => 'CheckoutController@getIssuedCheckout']);
 
             $router->post('/get-checkout-basket-goods', ['as' => 'customer.get_checkout_basket_goods', 'uses' => 'CheckoutController@getBasketGoods']);
 
+//===================================================================================================================================================================
             $router->post('/get-payment-expired', ['as' => 'customer.get_payment_expired', 'uses' => 'CheckoutController@getPaymentExpired']);
+//===================================================================================================================================================================
 
+//===================================================================================================================================================================
             $router->get('/get-main-profile', ['as' => 'customer.get_main_profile', 'uses' => 'CustomerController@getMainProfile']);
+//===================================================================================================================================================================
+
             $router->get('/get-main-address', ['as' => 'customer.get_main_address', 'uses' => 'CustomerController@getMainAddress']);
             $router->get('/get-all-addresses', ['as' => 'customer.get_all_addresses', 'uses' => 'CustomerController@getAllAddresses']);
             $router->post('/post-delete-address', ['as' => 'customer.post_delete_address', 'uses' => 'CustomerController@postDeleteAddress']);
             $router->post('/post-edit-address', ['as' => 'customer.post_edit_address', 'uses' => 'CustomerController@postEditAddress']);
             $router->post('/post-add-address', ['as' => 'customer.post_add_address', 'uses' => 'CustomerController@postAddAddress']);
+
+//===================================================================================================================================================================
             $router->post('/post-edit-profile', ['as' => 'customer.post_edit_profile', 'uses' => 'CustomerController@postEditProfile']);
+//===================================================================================================================================================================
+
             $router->get('/get-payment-method', ['as' => 'customer.get_payment_method', 'uses' => 'CustomerController@getPaymentMethod']);
         });
 

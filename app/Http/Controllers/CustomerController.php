@@ -93,7 +93,7 @@ class CustomerController extends Controller
             ['customer_id' => $request->get('customer')->id]
         );
 
-        if ($mainAddress) {
+        if (count($mainAddress) != 0) {
             return $this->jsonResponse([
                 'main_address' => $mainAddress[0]
             ], true, 'Successfully get the main address');
@@ -120,21 +120,17 @@ class CustomerController extends Controller
         $this->validate(
             $request,
             [
-                'data.address_id' => 'required|exists:addresses,id'
+                'address_id' => 'required|exists:addresses,id'
             ]
         );
 
-        $deleteStatus = Address::destroy($request->json("data")["address_id"]);
+        $deleteStatus = Address::destroy($request->json('address_id'));
 
         if ($deleteStatus) {
-            return $this->jsonResponse([
-                "deleted" => true
-            ], true, "Address successfully deleted");
+            return $this->jsonResponse(null, true, "Address successfully deleted");
         }
 
-        return $this->jsonResponse([
-            "deleted" => false
-        ], false, "Failed to delete address", 500);
+        return $this->jsonResponse(null, false, "Failed to delete address", 500);
     }
 
     public function postEditAddress(Request $request)
@@ -142,17 +138,17 @@ class CustomerController extends Controller
         $this->validate(
             $request,
             [
-                'data.address_id' => 'required|exists:addresses,id',
-                'data.name' => 'required',
-                'data.main' => 'required'
+                'address_id' => 'required|exists:addresses,id',
+                'name' => 'required',
+                'main' => 'required'
             ]
         );
 
         $editMain = false;
         $successEditMainAddress = false;
-        $addressId = $request->json("data")["address_id"];
+        $addressId = $request->json('address_id');
 
-        if ($request->json("data")["main"]) {
+        if ($request->json('main')) {
             $mainAddress = Address::where([
                 ["customer_id", $request->get('customer')->id],
                 ["main", true]
@@ -168,33 +164,27 @@ class CustomerController extends Controller
             ["id", $addressId],
             ["customer_id", $request->get('customer')->id]
         ])->first();
-        $address->name = $request->json("data")["name"];
-        $address->main = $request->json("data")["main"] ? 1 : 0;
+        $address->name = $request->json('name');
+        $address->main = $request->json('main') ? 1 : 0;
         $successEditAddress = $address->save();
 
         if ($editMain) {
             if ($successEditAddress && $successEditMainAddress) {
                 return $this->jsonResponse([
-                    'edit_success' => true,
                     'edited_address' => $address
                 ], true, "Successfully edited address");
             }
 
-            return $this->jsonResponse([
-                'edit_success' => false,
-            ], false, "Failed to edit address", 500);
+            return $this->jsonResponse(null, false, "Failed to edit address", 500);
         }
 
         if ($successEditAddress) {
             return $this->jsonResponse([
-                'edit_success' => true,
                 'edited_address' => $address
             ], true, "Successfully edited address");
         }
 
-        return $this->jsonResponse([
-            'edit_success' => false
-        ], false, "Failed to edit address", 500);
+        return $this->jsonResponse(null, false, "Failed to edit address", 500);
     }
 
     public function postAddAddress(Request $request)
@@ -202,18 +192,18 @@ class CustomerController extends Controller
         $this->validate(
             $request,
             [
-                'data.name' => 'required',
-                'data.main' => 'required'
+                'name' => 'required',
+                'main' => 'required'
             ]
         );
 
         $newAddress = new Address();
         $newAddress->customer_id = $request->get('customer')->id;
-        $newAddress->name = $request->json("data")["name"];
-        $newAddress->main = $request->json("data")["main"];
+        $newAddress->name = $request->json('name');
+        $newAddress->main = $request->json('main');
         $addNewAddressSuccess = $newAddress->save();
 
-        if ($request->json("data")["main"]) {
+        if ($request->json('main')) {
             $mainAddress = Address::where([
                 ["customer_id", $request->get('customer')->id],
                 ["main", true]
@@ -225,14 +215,10 @@ class CustomerController extends Controller
         }
 
         if ($addNewAddressSuccess) {
-            return $this->jsonResponse([
-                'add_success' => true
-            ], true, 'Successfully added new address');
+            return $this->jsonResponse(null, true, 'Successfully added new address');
         }
 
-        return $this->jsonResponse([
-            'add_success' => false
-        ], true, 'Failed to add new address');
+        return $this->jsonResponse(null, false, 'Failed to add new address');
     }
 
     public function postEditProfile(Request $request)
@@ -240,14 +226,14 @@ class CustomerController extends Controller
         $this->validate(
             $request,
             [
-                'data.full_name' => 'required',
-                'data.phone_number' => 'required'
+                'full_name' => 'required',
+                'phone_number' => 'required'
             ]
         );
 
         $profile = Profile::find($request->get('customer')->profile_id);
-        $profile->full_name = $request->json('data')["full_name"];
-        $profile->phone_number = $request->json('data')["phone_number"];
+        $profile->full_name = $request->json('full_name');
+        $profile->phone_number = $request->json('phone_number');
         $saveProfile = $profile->save();
 
         if ($saveProfile) {

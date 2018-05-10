@@ -34,7 +34,7 @@ class Customer extends Model
         return $this->hasOne('App\Basket', 'customer_id', 'id');
     }
 
-    public function customer()
+    public function address()
     {
         return $this->hasMany('App\Address', 'customer_id', 'id');
     }

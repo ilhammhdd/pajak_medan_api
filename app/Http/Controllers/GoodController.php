@@ -45,7 +45,7 @@ class GoodController extends Controller
 
         return $this->jsonResponse([
             'goods' => $goodsJsonArray
-        ], true, 'berhasil mendapatkan goods berdasrakan category');
+        ], true, 'berhasil mendapatkan goods berdasarkan category');
     }
 
     public function getReview(Request $request)
